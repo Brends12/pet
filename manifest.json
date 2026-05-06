@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "StudyBuddy Pet",
+  "version": "1.0",
+  "description": "A study pet that follows you everywhere!",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab"]
+}
