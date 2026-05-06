@@ -3,55 +3,124 @@
 <head>
     <script src="https://tailwindcss.com"></script>
     <style>
-        body { width: 300px; height: 400px; font-family: sans-serif; }
-        .stats { height: 8px; border-radius: 4px; background: #eee; overflow: hidden; }
-        .fill { height: 100%; transition: width 0.3s; }
+        body { width: 300px; height: 460px; font-family: 'Segoe UI', sans-serif; }
+        .stats-bg { height: 8px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+        .fill { height: 100%; transition: width 0.4s ease-out; }
+        .sleeping-mode { opacity: 0.5; filter: grayscale(40%); }
     </style>
 </head>
-<body class="p-4 bg-blue-50">
-    <div class="text-center">
-        <div id="pet" class="text-6xl mb-2">🤖</div>
-        <div id="bubble" class="bg-white p-2 rounded-lg text-xs shadow-sm mb-4 border italic">"I'm ready to learn on YouTube!"</div>
+<body class="p-4 bg-slate-50">
+    <div class="text-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <!-- Pet Emoji -->
+        <div id="pet" class="text-7xl mb-2 transition-transform duration-500">🤖</div>
         
-        <div class="space-y-2 mb-4">
-            <div class="text-[10px] font-bold">FOOD</div>
-            <div class="stats"><div id="fBar" class="fill bg-orange-400" style="width: 80%"></div></div>
-            <div class="text-[10px] font-bold">WATER</div>
-            <div class="stats"><div id="wBar" class="fill bg-blue-400" style="width: 80%"></div></div>
+        <!-- Speech Bubble -->
+        <div id="bubble" class="bg-blue-50 p-2 rounded-lg text-[11px] text-blue-700 font-medium mb-4 border border-blue-100 min-h-[40px] flex items-center justify-center">
+            "Ready to learn something new?"
+        </div>
+        
+        <!-- Stats Bars -->
+        <div class="space-y-3 mb-5">
+            <div>
+                <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1"><span>FOOD</span><span id="fText">80%</span></div>
+                <div class="stats-bg"><div id="fBar" class="fill bg-orange-400" style="width: 80%"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1"><span>WATER</span><span id="wText">80%</span></div>
+                <div class="stats-bg"><div id="wBar" class="fill bg-sky-400" style="width: 80%"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1"><span>BRAIN POWER</span><span id="bText">0%</span></div>
+                <div class="stats-bg"><div id="bBar" class="fill bg-purple-500" style="width: 0%"></div></div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-            <button id="feed" class="bg-orange-500 text-white p-2 rounded text-xs">FEED</button>
-            <button id="water" class="bg-blue-500 text-white p-2 rounded text-xs">WATER</button>
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 mb-2">
+            <button id="feed" class="bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-xs font-bold transition">FEED 🍎</button>
+            <button id="water" class="bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg text-xs font-bold transition">WATER 💧</button>
         </div>
-        <button id="study" class="w-full mt-2 bg-purple-600 text-white p-2 rounded text-xs font-bold">ASK ME A QUESTION</button>
+        
+        <button id="study" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg text-xs font-bold mb-2 transition">
+            STUDY TOGETHER 🧠
+        </button>
+
+        <button id="sleepBtn" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+            <span id="sleepText">GO TO SLEEP</span> 🌙
+        </button>
     </div>
 
     <script>
-        let food = 80;
-        let water = 80;
+        let food = 80; let water = 80; let brain = 0;
+        let isSleeping = false;
 
+        const updateUI = () => {
+            // Update Bars
+            document.getElementById('fBar').style.width = food + "%";
+            document.getElementById('wBar').style.width = water + "%";
+            document.getElementById('bBar').style.width = brain + "%";
+            
+            // Update Text
+            document.getElementById('fText').innerText = Math.floor(food) + "%";
+            document.getElementById('wText').innerText = Math.floor(water) + "%";
+            document.getElementById('bText').innerText = brain + "%";
+
+            // Update Emoji
+            const petEl = document.getElementById('pet');
+            if (isSleeping) {
+                petEl.innerText = '😴';
+                petEl.classList.add('sleeping-mode');
+            } else {
+                petEl.classList.remove('sleeping-mode');
+                if (brain >= 100) petEl.innerText = '🚀🤖';
+                else if (food < 20 || water < 20) petEl.innerText = '😫';
+                else petEl.innerText = '🤖';
+            }
+        };
+
+        // Sleep Logic
+        document.getElementById('sleepBtn').onclick = () => {
+            isSleeping = !isSleeping;
+            document.getElementById('sleepText').innerText = isSleeping ? "WAKE UP" : "GO TO SLEEP";
+            document.getElementById('bubble').innerText = isSleeping ? '"Zzz... system in standby..."' : '"System active! Let\'s go!"';
+            updateUI();
+        };
+
+        // Interaction Logic
         document.getElementById('feed').onclick = () => {
-            food = Math.min(100, food + 10);
-            update();
-            document.getElementById('bubble').innerText = '"Yum! Thanks!"';
+            if(isSleeping) return;
+            food = Math.min(100, food + 15);
+            document.getElementById('bubble').innerText = '"Delicious data snacks!"';
+            updateUI();
         };
 
         document.getElementById('water').onclick = () => {
-            water = Math.min(100, water + 10);
-            update();
-            document.getElementById('bubble').innerText = '"Glug glug glug!"';
+            if(isSleeping) return;
+            water = Math.min(100, water + 15);
+            document.getElementById('bubble').innerText = '"Coolant levels restored!"';
+            updateUI();
         };
 
-        function update() {
-            document.getElementById('fBar').style.width = food + "%";
-            document.getElementById('wBar').style.width = water + "%";
-        }
-        
         document.getElementById('study').onclick = () => {
-            document.getElementById('bubble').innerText = '"What is 5 + 5?"';
-            // In a real version, we'd use an AI call here!
+            if(isSleeping) return;
+            const q = prompt("Study Question: What is 50 + 50?");
+            if(q === "100") {
+                brain = Math.min(100, brain + 20);
+                food = Math.max(0, food - 10);
+                document.getElementById('bubble').innerText = '"I feel smarter!"';
+            } else {
+                document.getElementById('bubble').innerText = '"Try again, friend!"';
+            }
+            updateUI();
         };
+
+        // Auto-stats drain (Slower when sleeping)
+        setInterval(() => {
+            let drain = isSleeping ? 0.2 : 1;
+            food = Math.max(0, food - drain);
+            water = Math.max(0, water - drain);
+            updateUI();
+        }, 10000); 
     </script>
 </body>
 </html>
