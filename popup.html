@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        body { width: 300px; height: 400px; font-family: sans-serif; }
+        .stats { height: 8px; border-radius: 4px; background: #eee; overflow: hidden; }
+        .fill { height: 100%; transition: width 0.3s; }
+    </style>
+</head>
+<body class="p-4 bg-blue-50">
+    <div class="text-center">
+        <div id="pet" class="text-6xl mb-2">🤖</div>
+        <div id="bubble" class="bg-white p-2 rounded-lg text-xs shadow-sm mb-4 border italic">"I'm ready to learn on YouTube!"</div>
+        
+        <div class="space-y-2 mb-4">
+            <div class="text-[10px] font-bold">FOOD</div>
+            <div class="stats"><div id="fBar" class="fill bg-orange-400" style="width: 80%"></div></div>
+            <div class="text-[10px] font-bold">WATER</div>
+            <div class="stats"><div id="wBar" class="fill bg-blue-400" style="width: 80%"></div></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <button id="feed" class="bg-orange-500 text-white p-2 rounded text-xs">FEED</button>
+            <button id="water" class="bg-blue-500 text-white p-2 rounded text-xs">WATER</button>
+        </div>
+        <button id="study" class="w-full mt-2 bg-purple-600 text-white p-2 rounded text-xs font-bold">ASK ME A QUESTION</button>
+    </div>
+
+    <script>
+        let food = 80;
+        let water = 80;
+
+        document.getElementById('feed').onclick = () => {
+            food = Math.min(100, food + 10);
+            update();
+            document.getElementById('bubble').innerText = '"Yum! Thanks!"';
+        };
+
+        document.getElementById('water').onclick = () => {
+            water = Math.min(100, water + 10);
+            update();
+            document.getElementById('bubble').innerText = '"Glug glug glug!"';
+        };
+
+        function update() {
+            document.getElementById('fBar').style.width = food + "%";
+            document.getElementById('wBar').style.width = water + "%";
+        }
+        
+        document.getElementById('study').onclick = () => {
+            document.getElementById('bubble').innerText = '"What is 5 + 5?"';
+            // In a real version, we'd use an AI call here!
+        };
+    </script>
+</body>
+</html>
